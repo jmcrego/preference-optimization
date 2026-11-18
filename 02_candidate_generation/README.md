@@ -6,7 +6,7 @@ The first experiment uses one TranslateGemma completion per source to produce a 
 
 From the Jean Zay login shell, source `scripts/setup_environment.sh` and export `TRANSLATEGEMMA_MODEL_PATH` with the existing shared model directory. From inside `02_candidate_generation/`, create `logs/` once with `mkdir -p logs`, then run `bash run.sh` to submit the pilot. SLURM writes logs under `./logs/`.
 
-The batch script loads the H100 modules, activates the existing project environment, and invokes `generate_candidates.py` with `srun`. The environment must have a working vLLM installation. The Python command and exact pilot arguments are in [generate_candidates.slurm](generate_candidates.slurm). It takes the first 50 rows of the English-to-French training split. Edit the batch command to change the pilot or remove `--limit` for the full input.
+The batch script loads the H100 modules, activates the existing project environment, and invokes `generate_candidates.py` with `srun`. The job uses `python3 -I` so user-site packages do not shadow dependencies from the Jean Zay module or project venv. vLLM must be available in the selected Python environment. The Python command and exact pilot arguments are in [generate_candidates.slurm](generate_candidates.slurm). It takes the first 50 rows of the English-to-French training split. Edit the batch command to change the pilot or remove `--limit` for the full input.
 
 The Python CLI accepts Stage 01 JSONL with `source` and `reference` fields. It also accepts `target` as the reference field. Existing IDs are carried through. Pass a prompt file with `{source}`, `{reference}`, `{source_language}`, and `{target_language}` placeholders. Completions should start with `LITERAL:` and then place `IDIOMATIC:` on its own line.
 
