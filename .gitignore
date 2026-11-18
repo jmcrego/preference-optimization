@@ -15,6 +15,7 @@ secrets/
 /experiments/
 /checkpoints/
 /logs/
+/0[1-7]_*/logs/
 /caches/
 /tmp/
 /venvs/

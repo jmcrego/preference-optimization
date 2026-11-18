@@ -23,7 +23,7 @@ export HF_HUB_OFFLINE=1
 export HF_DATASETS_OFFLINE=1
 # TODO: Create a unique temporary directory per job when job execution is implemented.
 
-mkdir -p -- "$SCRATCH_DIR/venvs" "$SCRATCH_DIR/logs" \
+mkdir -p -- "$SCRATCH_DIR/venvs" \
     "$SCRATCH_DIR"/datasets/{raw,prepared,generated,validated,splits} \
     "$SCRATCH_DIR"/experiments/{checkpoints,adapters,evaluations} \
     "$HF_HUB_CACHE" "$HF_DATASETS_CACHE" "$TORCH_HOME" "$TRITON_CACHE_DIR" "$TMPDIR" || return 1

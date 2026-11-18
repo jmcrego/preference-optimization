@@ -27,7 +27,6 @@ $SCRATCH_DIR/
 ├── venvs/
 ├── datasets/{raw,prepared,generated,validated,splits}/
 ├── experiments/{checkpoints,adapters,evaluations}/
-├── logs/
 ├── caches/{huggingface,datasets,torch,triton}/
 ├── tmp/
 └── models/                  # only for necessary staged/downloaded models
@@ -50,13 +49,13 @@ preference-optimization/
 │   ├── models/translategemma_12b.yaml
 │   ├── features/style.yaml
 │   └── datasets/style_dataset.yaml
-├── 01_data_preparation/{README.md,run.sh,prepare_data.sbatch,inspect_dataset.py,parallel_tsv.py}
-├── 02_candidate_generation/{README.md,run.py,run.sh,generate_candidates.sbatch,teacher.example.yaml}
-├── 03_candidate_validation/{README.md,run.py,run.sh,validate_candidates.sbatch}
-├── 04_preference_dataset/{README.md,run.py,run.sh,build_preferences.sbatch}
-├── 05_fine_tuning/{README.md,run.py,run.sh,train_dpo.sbatch,style_dpo.yaml}
-├── 06_evaluation/{README.md,run.py,run.sh,evaluate.sbatch,style_evaluation.yaml}
-├── 07_analysis/{README.md,run.py,run.sh,analyze.sbatch}
+├── 01_data_preparation/{README.md,run.sh,prepare_data.slurm,inspect_dataset.py,parallel_tsv.py}
+├── 02_candidate_generation/{README.md,generate_candidates.py,run.sh,generate_candidates.slurm,teacher.example.yaml,prompts/}
+├── 03_candidate_validation/{README.md,validate_candidates.py,run.sh,validate_candidates.slurm}
+├── 04_preference_dataset/{README.md,run.py,run.sh,build_preferences.slurm}
+├── 05_fine_tuning/{README.md,train_dpo.py,run.sh,train_dpo.slurm,style_dpo.yaml}
+├── 06_evaluation/{README.md,evaluate.py,run.sh,evaluate.slurm,style_evaluation.yaml}
+├── 07_analysis/{README.md,analyze.py,run.sh,analyze.slurm}
 ├── scripts/
 │   ├── setup_environment.sh
 │   ├── check_environment.py

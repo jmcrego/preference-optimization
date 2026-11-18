@@ -42,14 +42,21 @@ class ScratchTests(unittest.TestCase):
             )
             self.assertIn(str(scratch), result.stdout)
             self.assertTrue((scratch / "datasets/prepared").is_dir())
+            self.assertFalse((scratch / "logs").exists())
             self.assertTrue((scratch / "caches/huggingface/hub").is_dir())
 
 
 class StageTests(unittest.TestCase):
     def test_stage_entry_points_exit_as_stubs(self):
-        stages = sorted(ROOT.glob("0[2-7]_*/run.py"))
+        stages = [
+            ROOT / "03_candidate_validation/validate_candidates.py",
+            ROOT / "04_preference_dataset/run.py",
+            ROOT / "05_fine_tuning/train_dpo.py",
+            ROOT / "06_evaluation/evaluate.py",
+            ROOT / "07_analysis/analyze.py",
+        ]
         self.assertEqual([stage.parent.name[:2] for stage in stages],
-                         [f"{index:02}" for index in range(2, 8)])
+                         [f"{index:02}" for index in range(3, 8)])
         for stage in stages:
             with self.subTest(stage=stage.parent.name):
                 self.assertTrue(stage.with_name("README.md").is_file())

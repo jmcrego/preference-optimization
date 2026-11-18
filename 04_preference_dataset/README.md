@@ -6,4 +6,4 @@ Expand each validated pair into two reversed style-conditioned DPO records in it
 
 **TODO** — TranslateGemma prompt format after inspection of the actual tokenizer and chat template.
 
-Use [run.sh](run.sh) as the Jean Zay command log. The stage's batch template is [`build_preferences.sbatch`](build_preferences.sbatch).
+Use [run.sh](run.sh) as the Jean Zay command log. The stage's batch template is [`build_preferences.slurm`](build_preferences.slurm).

@@ -1,14 +1,19 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Jean Zay command log. Record the exact commands and settings in execution order.
+# Jean Zay command log. Keep the paths, arguments, and order used for each run.
 stage_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+repo_dir="$(dirname -- "$stage_dir")"
 
-# 1. In your Jean Zay login shell, source scripts/setup_environment.sh from the checkout.
+# 1. In your Jean Zay login shell, source the shared environment.
+# source "$repo_dir/scripts/setup_environment.sh"
 
-# 2. Record the final arguments and the manual invocation here.
-# python "$stage_dir/run.py"
-# For a batch run, record the verified SLURM command for validate_candidates.sbatch here.
+# 2. Stage 02 reference-assisted pilot. Submit separately from the login shell.
+# (cd -- "$repo_dir/02_candidate_generation" && bash run.sh)
+# Candidates: $SCRATCH_DIR/datasets/generated/enfr/reference_assisted_literal_then_idiomatic/reference_assisted_literal_then_idiomatic.jsonl
 
-printf '%s\n' 'This stage is a stub. The command log is a template.' >&2
-exit 1
+# 3. Candidate validation. Record the exact Stage 02 output path and judge
+# settings here once validation is implemented.
+# For a batch run, record the verified SLURM command for validate_candidates.slurm.
+
+python3 "$stage_dir/validate_candidates.py"

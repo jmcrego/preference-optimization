@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
+#SBATCH --job-name=PO.train
+#SBATCH --output=./logs/%u.%x.%j.out
+#SBATCH --error=./logs/%u.%x.%j.log
 # Jean Zay H100 settings supplied for this project.
 # Enable the directives and module commands when the stage has a workload.
-# The relative log paths require an existing logs/ directory in the job's
-# working directory. Use the project scratch root for that directory.
-# #SBATCH --job-name=PO
-# #SBATCH --output=./logs/%u.%x.%j.out
-# #SBATCH --error=./logs/%u.%x.%j.log
 # #SBATCH --gres=gpu:1
 # #SBATCH --nodes=1
 # #SBATCH --cpus-per-task=10

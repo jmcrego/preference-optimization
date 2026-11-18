@@ -1,14 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Jean Zay command log. Record the exact commands and settings in execution order.
+# Jean Zay command log. Keep the paths, arguments, and order used for each run.
 stage_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+repo_dir="$(dirname -- "$stage_dir")"
 
-# 1. In your Jean Zay login shell, source scripts/setup_environment.sh from the checkout.
+# 1. In your Jean Zay login shell, source the shared environment.
+# source "$repo_dir/scripts/setup_environment.sh"
 
-# 2. Record the final arguments and the manual invocation here.
-# python "$stage_dir/run.py"
-# For a batch run, record the verified SLURM command for analyze.sbatch here.
+# 2. Stage 06 evaluation command. Run separately once implemented.
+# python3 "$repo_dir/06_evaluation/evaluate.py"
 
-printf '%s\n' 'This stage is a stub. The command log is a template.' >&2
-exit 1
+# 3. Record the exact Stage 06 results path and analysis output directory.
+# For a batch run, record the verified SLURM command for analyze.slurm.
+
+python3 "$stage_dir/analyze.py"

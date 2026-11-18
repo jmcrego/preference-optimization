@@ -37,7 +37,7 @@ SCRATCH_DIR=/lustre/fsn1/projects/rech/eut/ujt99zo/josep/preference-optimization
 - Virtual environments: `$SCRATCH_DIR/venvs/`
 - Datasets: `$SCRATCH_DIR/datasets/`
 - Training artifacts: `$SCRATCH_DIR/experiments/`
-- Logs: `$SCRATCH_DIR/logs/`
+- Stage SLURM logs: a Git-ignored `logs/` directory inside each numbered stage
 - Caches and temporary files: `$SCRATCH_DIR/caches/`, `$SCRATCH_DIR/tmp/`
 - Downloaded model copies **only when necessary**: `$SCRATCH_DIR/models/`
 
