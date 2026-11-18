@@ -1,6 +1,6 @@
 """Report the effective scratch setting without probing the cluster."""
 
-from preference_optimization.storage.paths import scratch_dir
+from scratch_paths import scratch_dir
 
 if __name__ == "__main__":
     try:

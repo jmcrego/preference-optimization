@@ -4,10 +4,11 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+from tempfile import TemporaryDirectory
 import unittest
 from unittest.mock import patch
 
-from preference_optimization.storage.paths import DEFAULT_SCRATCH_DIR, scratch_dir
+from scripts.scratch_paths import DEFAULT_SCRATCH_DIR, scratch_dir
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -26,17 +27,22 @@ class ScratchTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "absolute path"):
                 scratch_dir()
 
-    def test_shell_and_yaml_use_same_default(self):
+    def test_shell_setup_creates_scratch_directories(self):
         config = (ROOT / "configs/base.yaml").read_text()
         self.assertIn(f"  scratch_default: {DEFAULT_SCRATCH_DIR}\n", config)
-        result = subprocess.run(
-            ["bash", "-c", 'unset SCRATCH_DIR; source slurm/setup_environment.sh && printf "%s" "$SCRATCH_DIR"'],
-            cwd=ROOT,
-            check=True,
-            capture_output=True,
-            text=True,
-        )
-        self.assertEqual(result.stdout, str(DEFAULT_SCRATCH_DIR))
+        with TemporaryDirectory() as directory:
+            scratch = Path(directory) / "project scratch"
+            result = subprocess.run(
+                ["bash", "-c", "source scripts/setup_environment.sh"],
+                cwd=ROOT,
+                env=dict(os.environ, SCRATCH_DIR=str(scratch), PROJECT_VENV=""),
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            self.assertIn(str(scratch), result.stdout)
+            self.assertTrue((scratch / "datasets/prepared").is_dir())
+            self.assertTrue((scratch / "caches/huggingface/hub").is_dir())
 
 
 class StageTests(unittest.TestCase):

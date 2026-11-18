@@ -14,13 +14,13 @@ Parameter-efficient fine-tuning of machine translation models using preference o
 | 06 | [Evaluation](06_evaluation/README.md) |
 | 07 | [Analysis](07_analysis/README.md) |
 
-Stage 01 converts existing train and test TSVs into JSONL. Stages 02–07 are Phase 1 stubs. The YAML files under `configs/` document planned settings. The package under `src/preference_optimization/` contains the scratch-path helper and namespaces for later phases.
+Stage 01 converts existing train and test TSVs into JSONL. Stages 02–07 are Phase 1 stubs. Each stage keeps its Python entry point, SLURM template, and Jean Zay `run.sh` command log together. Stages that need dependencies reuse the same project virtual environment. Each stage keeps its own configuration templates. The `configs/` directory holds settings shared across stages, including storage, the base model, style, and the dataset contract. The `scripts/` directory contains the Jean Zay environment and scratch-storage utilities.
 
 From the repository root, run the CPU checks or display the resolved scratch root with the Python standard library.
 
 ```bash
-PYTHONPATH=src python3 -m unittest discover -s tests -v
-PYTHONPATH=src python3 scripts/check_environment.py
+python3 -m unittest discover -s tests -v
+python3 scripts/check_environment.py
 ```
 
 See the [roadmap](docs/implementation_plan.md), [architecture](docs/architecture.md), and [Jean Zay setup notes](docs/jeanzay.md) for open decisions and operational scope.

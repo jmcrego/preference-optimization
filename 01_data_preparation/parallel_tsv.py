@@ -49,3 +49,7 @@ def main():
             raise
     except (OSError, EOFError, ValueError) as error:
         parser.exit(1, f"{error}\n")
+
+
+if __name__ == "__main__":
+    main()

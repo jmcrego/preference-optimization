@@ -22,7 +22,7 @@ Keep distinct, numbered stage directories with their own README and thin entry p
 6. `06_evaluation/`
 7. `07_analysis/`
 
-Put reusable implementation in `src/preference_optimization/`; do not duplicate logic in stage entry points. Use `configs/` for YAML configuration, `slurm/` for Jean Zay batch templates, `scripts/` for environment utilities, `tests/` for CPU-only tests, and `docs/` for design notes. Keep feature-specific behavior isolated so that future preference dimensions can be added without changing the shared training core. Implement **style only** when implementation begins.
+Keep stage-specific Python scripts, YAML configuration, SLURM templates, and the ordered `run.sh` command log in each numbered stage directory. Use `configs/` for shared YAML configuration, `scripts/` for shared environment utilities, `tests/` for CPU-only tests, and `docs/` for design notes. Keep feature-specific behavior isolated so that future preference dimensions can be added without changing the shared training core. Implement **style only** when implementation begins.
 
 ## Jean Zay and storage
 

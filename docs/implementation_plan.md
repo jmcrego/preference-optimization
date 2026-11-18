@@ -43,51 +43,24 @@ When environment setup is implemented, centralize cache exports such as `HF_HOME
 preference-optimization/
 ├── AGENTS.md
 ├── README.md
-├── pyproject.toml
 ├── .gitignore
 ├── .env.example
 ├── configs/
 │   ├── base.yaml
-│   ├── models/
-│   │   ├── translategemma_12b.yaml
-│   │   └── teacher.example.yaml
+│   ├── models/translategemma_12b.yaml
 │   ├── features/style.yaml
-│   ├── datasets/style_dataset.yaml
-│   ├── training/style_dpo.yaml
-│   └── evaluation/style_evaluation.yaml
-├── 01_data_preparation/{README.md,run.py}
-├── 02_candidate_generation/{README.md,run.py}
-├── 03_candidate_validation/{README.md,run.py}
-├── 04_preference_dataset/{README.md,run.py}
-├── 05_fine_tuning/{README.md,run.py}
-├── 06_evaluation/{README.md,run.py}
-├── 07_analysis/{README.md,run.py}
-├── src/preference_optimization/
-│   ├── __init__.py
-│   ├── config/
-│   ├── data/
-│   ├── features/
-│   ├── models/
-│   ├── generation/
-│   ├── validation/
-│   ├── training/
-│   ├── evaluation/
-│   ├── prompts/
-│   ├── storage/
-│   └── utils/
-├── slurm/
-│   ├── setup_environment.sh
-│   ├── prepare_data.sbatch
-│   ├── generate_candidates.sbatch
-│   ├── validate_candidates.sbatch
-│   ├── build_preferences.sbatch
-│   ├── train_dpo.sbatch
-│   └── evaluate.sbatch
+│   └── datasets/style_dataset.yaml
+├── 01_data_preparation/{README.md,run.sh,prepare_data.sbatch,inspect_dataset.py,parallel_tsv.py}
+├── 02_candidate_generation/{README.md,run.py,run.sh,generate_candidates.sbatch,teacher.example.yaml}
+├── 03_candidate_validation/{README.md,run.py,run.sh,validate_candidates.sbatch}
+├── 04_preference_dataset/{README.md,run.py,run.sh,build_preferences.sbatch}
+├── 05_fine_tuning/{README.md,run.py,run.sh,train_dpo.sbatch,style_dpo.yaml}
+├── 06_evaluation/{README.md,run.py,run.sh,evaluate.sbatch,style_evaluation.yaml}
+├── 07_analysis/{README.md,run.py,run.sh,analyze.sbatch}
 ├── scripts/
-│   ├── initialize_storage.sh
-│   ├── create_venv.sh
+│   ├── setup_environment.sh
 │   ├── check_environment.py
-│   └── inspect_dataset.py
+│   └── scratch_paths.py
 ├── tests/
 └── docs/
     ├── implementation_plan.md
@@ -98,7 +71,7 @@ preference-optimization/
     └── adding_features.md
 ```
 
-Numbered stage directories own their READMEs and thin entry points; reusable Python logic belongs under `src/`. Each stage should eventually accept configuration, validate inputs, record provenance, and write versioned outputs without silent overwrites.
+Numbered stage directories own their READMEs, entry points, and stage-specific settings. Shared configuration belongs under `configs/`. Each stage should eventually accept configuration, validate inputs, record provenance, and write versioned outputs without silent overwrites.
 
 ## 4. Pipeline roadmap
 
@@ -168,7 +141,7 @@ No model loading or downloads should occur during config validation or CPU-only 
 
 ## 6. Jean Zay job design
 
-Eventually provide one SLURM template per stage. GPU stages request a single H100; CPU-only stages should not request a GPU. Jobs activate a virtual environment under `$SCRATCH_DIR/venvs/`, set caches and job-specific temp paths, validate inputs, and write logs to scratch. All site-specific directives are explicit TODOs until confirmed. Support offline operation and a separately authorized model-staging workflow if needed. Do not submit jobs automatically.
+Each stage keeps its SLURM template and its ordered `run.sh` command log beside the Python entry point. GPU stages request a single H100; CPU-only stages should not request a GPU. Jobs reuse the existing project virtual environment under `$SCRATCH_DIR/venvs/`, set caches and job-specific temp paths, validate inputs, and write logs to scratch. All site-specific directives are explicit TODOs until confirmed. Support offline operation and a separately authorized model-staging workflow if needed. Do not submit jobs automatically.
 
 ## 7. Extensible features
 
@@ -176,7 +149,7 @@ A feature should declare its values, instruction text, candidate-generation guid
 
 ## 8. Tests and engineering standards
 
-Use a conventional Python package (`pyproject.toml`), pytest, readable modules, and pinned compatible dependencies when the environment is established. CPU-only tests should cover schemas, source-level splits, reversed preference construction, prompt formatting, configuration and scratch path resolution, and serialization. Keep GPU integration tests opt-in. No unit test should download a model or need Jean Zay access.
+Use readable Python modules, CPU-only tests, and pinned compatible dependencies when the environment is established. CPU-only tests should cover schemas, source-level splits, reversed preference construction, prompt formatting, configuration and scratch path resolution, and serialization. Keep GPU integration tests opt-in. No unit test should download a model or need Jean Zay access.
 
 ## 9. Incremental implementation sequence
 
