@@ -1,0 +1,5 @@
+storage:
+  scratch_env: SCRATCH_DIR
+  scratch_default: /lustre/fsn1/projects/rech/eut/ujt99zo/josep/preference-optimization
+  prevent_overwrite: true
+seed: null  # TODO: Choose and record a seed per experiment.

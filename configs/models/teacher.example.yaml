@@ -1,0 +1,9 @@
+teacher:
+  backend: null  # TODO: Confirm model and backend.
+  id: null
+  path_env: TEACHER_MODEL_PATH
+  revision: null
+  local_files_only: true
+generation:
+  strategy: null  # TODO: Select a strategy and decoding parameters.
+  decoding: null

@@ -1,0 +1,5 @@
+model:
+  id: google/translategemma-12b-it
+  path_env: TRANSLATEGEMMA_MODEL_PATH
+  revision: null  # TODO: Confirm shared model path and revision.
+  local_files_only: true

@@ -1,0 +1,12 @@
+evaluation:
+  baselines:
+    - base_without_style_control
+    - base_with_style_prompts
+    - style_dpo_lora
+  metrics: null  # TODO: Select metrics and versions.
+  judge:
+    id: null  # TODO: Confirm judge model, shared path, and revision.
+    path_env: JUDGE_MODEL_PATH
+    revision: null
+  human_annotations: null  # TODO: Define calibration and annotation protocol.
+  decoding: null

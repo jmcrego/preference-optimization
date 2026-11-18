@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "preference-optimization"
+version = "0.1.0"
+description = "Preference-based fine-tuning for machine translation"
+dependencies = []
+
+[tool.setuptools.packages.find]
+where = ["src"]

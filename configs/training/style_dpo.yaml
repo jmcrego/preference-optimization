@@ -1,0 +1,20 @@
+training:
+  algorithm: dpo
+  feature: style
+  adapter:
+    method: lora
+    count: 1
+    rank: null
+    alpha: null
+    dropout: null
+    target_modules: null
+  reference_policy: original_translategemma
+  reference_strategy: null  # TODO: Verify single-H100 memory feasibility.
+  beta: null
+  learning_rate: null
+  batch_size: null
+  gradient_accumulation_steps: null
+  gradient_checkpointing: null
+  max_sequence_length: null
+  precision: null
+  quantization: null

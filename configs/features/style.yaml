@@ -1,0 +1,11 @@
+feature: style
+values:
+  idiomatic: Use natural target-language phrasing while preserving meaning and technical precision.
+  literal: Stay close to source wording and structure while preserving grammatical target-language phrasing.
+quality_requirements:
+  - semantic adequacy
+  - grammaticality
+  - required terminology
+allow_ties: true
+reject_ambiguous_pairs: true
+prompt_template: null  # TODO: Inspect the actual TranslateGemma chat template first.

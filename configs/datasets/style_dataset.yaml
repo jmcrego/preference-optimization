@@ -1,0 +1,9 @@
+corpus:
+  paths: null  # TODO: Confirm corpus paths and input formats.
+  language_pairs: null
+split:
+  unit: source
+  proportions: null  # TODO: Confirm dataset sizes and split proportions.
+preferences:
+  feature: style
+  records_per_accepted_pair: 2
