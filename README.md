@@ -2,7 +2,7 @@
 
 Parameter-efficient fine-tuning of machine translation models using preference optimization. The initial experiment will use DPO to train a single shared LoRA adapter on `google/translategemma-12b-it` for idiomatic and literal translation.
 
-## Phase 1 scaffold
+## Pipeline stages
 
 | Stage | Entry point documentation |
 | --- | --- |
@@ -14,7 +14,7 @@ Parameter-efficient fine-tuning of machine translation models using preference o
 | 06 | [Evaluation](06_evaluation/README.md) |
 | 07 | [Analysis](07_analysis/README.md) |
 
-Each stage entry point exits with a Phase 1 stub message. The YAML files under `configs/` document planned settings. The package under `src/preference_optimization/` contains the scratch-path helper and namespaces for later phases.
+Stage 01 converts existing train and test TSVs into JSONL. Stages 02–07 are Phase 1 stubs. The YAML files under `configs/` document planned settings. The package under `src/preference_optimization/` contains the scratch-path helper and namespaces for later phases.
 
 From the repository root, run the CPU checks or display the resolved scratch root with the Python standard library.
 

@@ -41,9 +41,9 @@ class ScratchTests(unittest.TestCase):
 
 class StageTests(unittest.TestCase):
     def test_stage_entry_points_exit_as_stubs(self):
-        stages = sorted(ROOT.glob("0[1-7]_*/run.py"))
+        stages = sorted(ROOT.glob("0[2-7]_*/run.py"))
         self.assertEqual([stage.parent.name[:2] for stage in stages],
-                         [f"{index:02}" for index in range(1, 8)])
+                         [f"{index:02}" for index in range(2, 8)])
         for stage in stages:
             with self.subTest(stage=stage.parent.name):
                 self.assertTrue(stage.with_name("README.md").is_file())
