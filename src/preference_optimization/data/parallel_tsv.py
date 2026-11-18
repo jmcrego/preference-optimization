@@ -1,12 +1,14 @@
 """Convert supplied parallel TSV splits to translation records."""
 
 import argparse
+import gzip
 import json
 from pathlib import Path
 
 
 def convert_split(input_path, output_path, split, source_language, target_language):
-    with input_path.open(encoding="utf-8-sig") as source_file:
+    open_input = gzip.open if input_path.suffix == ".gz" else open
+    with open_input(input_path, "rt", encoding="utf-8-sig") as source_file:
         with output_path.open("x", encoding="utf-8", newline="\n") as output_file:
             for line_number, line in enumerate(source_file, start=1):
                 fields = line.removesuffix("\n").split("\t")
@@ -25,8 +27,8 @@ def convert_split(input_path, output_path, split, source_language, target_langua
 
 def main():
     parser = argparse.ArgumentParser(description="Convert existing train and test TSVs to JSONL.")
-    parser.add_argument("--train", required=True, type=Path, help="Training TSV")
-    parser.add_argument("--test", required=True, type=Path, help="Test TSV")
+    parser.add_argument("--train", required=True, type=Path, help="Training TSV or gzipped TSV")
+    parser.add_argument("--test", required=True, type=Path, help="Test TSV or gzipped TSV")
     parser.add_argument("--source-language", required=True)
     parser.add_argument("--target-language", required=True)
     parser.add_argument("--output-dir", required=True, type=Path, help="New output directory")
@@ -40,10 +42,10 @@ def main():
                     input_path, args.output_dir / f"{split}.jsonl", split,
                     args.source_language, args.target_language,
                 )
-        except (OSError, ValueError, KeyboardInterrupt):
+        except (OSError, EOFError, ValueError, KeyboardInterrupt):
             for split in ("train", "test"):
                 (args.output_dir / f"{split}.jsonl").unlink(missing_ok=True)
             args.output_dir.rmdir()
             raise
-    except (OSError, ValueError) as error:
+    except (OSError, EOFError, ValueError) as error:
         parser.exit(1, f"{error}\n")
