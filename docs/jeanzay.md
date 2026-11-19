@@ -12,7 +12,7 @@ The script creates the scratch directories, exports cache paths and Hugging Face
 
 Load any modules required by your virtual environment before sourcing the script. Create the environment once after confirming the Python and module settings. The setup script can be sourced repeatedly and does not install anything. For Stage 01, choose a new output directory under `$SCRATCH_DIR/datasets/prepared/`.
 
-Confirm the persistent checkout location, any required partition or memory settings, and the shared virtual environment's compatibility with the supplied runtime modules. Confirm the existing shared TranslateGemma path and revision before populating `TRANSLATEGEMMA_MODEL_PATH`. Teacher and judge locations also remain open.
+Confirm the persistent checkout location, any required partition or memory settings, and the shared virtual environment's compatibility with the supplied runtime modules. Setup defaults `TRANSLATEGEMMA_MODEL_PATH` to the Jean Zay shared TranslateGemma directory. Stage 02 checks for `config.json` before submission. The model revision remains to be confirmed. Teacher and judge locations also remain open.
 
 ## Stage command logs and the shared environment
 

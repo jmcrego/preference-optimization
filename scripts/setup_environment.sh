@@ -12,6 +12,7 @@ if [[ "${SCRATCH_DIR:-/}" != /* ]]; then
 fi
 
 export SCRATCH_DIR="${SCRATCH_DIR:-/lustre/fsn1/projects/rech/eut/ujt99zo/josep/preference-optimization}"
+export TRANSLATEGEMMA_MODEL_PATH="${TRANSLATEGEMMA_MODEL_PATH:-/lustre/fsmisc/dataset/HuggingFace_Models/google/translategemma-12b-it}"
 export HF_HOME="$SCRATCH_DIR/caches/huggingface"
 export HF_HUB_CACHE="$HF_HOME/hub"
 export HF_DATASETS_CACHE="$SCRATCH_DIR/caches/datasets"
