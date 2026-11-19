@@ -21,7 +21,11 @@ module load pytorch-gpu/py3/2.6.0
 source "$stage_dir/../scripts/setup_environment.sh"
 : "${TRANSLATEGEMMA_MODEL_PATH:?Set the shared local TranslateGemma model path}"
 
-# Isolate imports from login-shell Python settings and ~/.local packages.
+# vLLM starts an inspection subprocess without Python's -I flag.
+# Keep its imports isolated from user-site packages and inherited Python paths.
+unset PYTHONPATH
+export PYTHONNOUSERSITE=1
+export PYTHONSAFEPATH=1
 srun --ntasks=1 python3 -I "$stage_dir/generate_candidates.py" \
     --dataset "$SCRATCH_DIR/datasets/prepared/enfr/train.jsonl" \
     --source-language en \
