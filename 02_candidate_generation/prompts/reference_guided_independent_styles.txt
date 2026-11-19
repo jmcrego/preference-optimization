@@ -1,0 +1,11 @@
+Translate the source from {source_language} to {target_language}.
+{style_instruction}
+Use the human reference only to resolve ambiguity in the source. Write your own
+translation from the source. Do not copy or rewrite the reference.
+Return only the translation.
+
+Source:
+{source}
+
+Human reference:
+{reference}

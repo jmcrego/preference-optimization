@@ -31,8 +31,8 @@ srun --ntasks=1 python3 -I "$stage_dir/generate_candidates.py" \
     --dataset "$SCRATCH_DIR/datasets/prepared/enfr/train.jsonl" \
     --source-language en \
     --target-language fr \
-    --prompt "$stage_dir/prompts/reference_assisted_literal_then_idiomatic.txt" \
-    --output-dir "$SCRATCH_DIR/datasets/generated/enfr/diagnostics/reference_assisted_literal_then_idiomatic" \
+    --prompt "$stage_dir/prompts/reference_guided_independent_styles.txt" \
+    --output-dir "$SCRATCH_DIR/datasets/generated/enfr/diagnostics/reference_guided_independent_styles" \
     --model-path "$TRANSLATEGEMMA_MODEL_PATH" \
     --limit 3 \
     --batch-size 32 \

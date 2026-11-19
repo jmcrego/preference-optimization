@@ -16,7 +16,7 @@ stage_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 #     --target-language fr \
 #     --output-dir "$SCRATCH_DIR/datasets/prepared/enfr"
 
-# 3. Submit the reference-assisted pilot to Jean Zay.
+# 3. Submit the independent-style pilot to Jean Zay.
 : "${SCRATCH_DIR:?Source scripts/setup_environment.sh first}"
 : "${TRANSLATEGEMMA_MODEL_PATH:?Set the shared local TranslateGemma model path}"
 

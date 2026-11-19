@@ -6,23 +6,13 @@ from itertools import islice
 import json
 import os
 from pathlib import Path
-import re
 from tempfile import NamedTemporaryFile
 
 
-LABEL = re.compile(r"^[ \t]*(LITERAL|IDIOMATIC):[ \t]*", re.MULTILINE)
-
-
-def parse_pair(text):
-    labels = list(LABEL.finditer(text))
-    if [label.group(1) for label in labels] != ["LITERAL", "IDIOMATIC"]:
-        return None, None
-    first, second = labels
-    literal = text[first.end():second.start()].strip()
-    idiomatic = text[second.end():].strip()
-    if text[:first.start()].strip() or not literal or not idiomatic:
-        return None, None
-    return literal, idiomatic
+STYLE_INSTRUCTIONS = {
+    "literal": "Stay close to the source wording and structure while keeping the translation grammatical.",
+    "idiomatic": "Express the same meaning in natural, idiomatic language.",
+}
 
 
 def read_dataset(path, source_language, target_language):
@@ -59,7 +49,7 @@ def generate(args):
     if destination.exists():
         raise FileExistsError(f"Output already exists: {destination}")
     template = args.prompt.read_text(encoding="utf-8")
-    fields = ("source", "reference", "source_language", "target_language")
+    fields = ("source", "reference", "source_language", "target_language", "style_instruction")
     if any("{" + field + "}" not in template for field in fields):
         raise ValueError(f"Prompt must contain these placeholders: {', '.join(fields)}")
     template.format(**dict.fromkeys(fields, ""))
@@ -105,36 +95,37 @@ def generate(args):
         while batch := list(islice(rows, args.batch_size)):
             prompts = []
             for row in batch:
-                instruction = template.format(**row).rstrip()
-                prompt = f"{start_token}user\n{instruction}{end_token}\n{start_token}model\n"
-                tokens = tokenizer.encode(prompt, add_special_tokens=False)
-                prompts.append({"prompt_token_ids": [tokenizer.bos_token_id, *tokens]})
+                for style_instruction in STYLE_INSTRUCTIONS.values():
+                    instruction = template.format(**row, style_instruction=style_instruction).rstrip()
+                    prompt = f"{start_token}user\n{instruction}{end_token}\n{start_token}model\n"
+                    tokens = tokenizer.encode(prompt, add_special_tokens=False)
+                    prompts.append({"prompt_token_ids": [tokenizer.bos_token_id, *tokens]})
             results = llm.generate(prompts, sampling)
-            if len(results) != len(batch):
+            if len(results) != len(prompts):
                 raise RuntimeError("vLLM returned an unexpected number of completions")
-            for row, result in zip(batch, results):
-                completion = result.outputs[0]
-                literal, idiomatic = parse_pair(completion.text)
-                if completion.finish_reason == "length":
-                    literal, idiomatic = None, None
-                record = {
-                    **row,
-                    **provenance,
-                    "literal": literal,
-                    "idiomatic": idiomatic,
-                    "raw_completion": completion.text,
-                    "finish_reason": completion.finish_reason,
-                }
-                if not completion.text.strip():
-                    token_ids = list(completion.token_ids)
-                    record["completion_diagnostics"] = {
-                        "generated_token_count": len(token_ids),
-                        "first_token_ids": token_ids[:32],
-                        "first_tokens_decoded": tokenizer.decode(
-                            token_ids[:32], skip_special_tokens=False,
-                        ),
-                        "stop_reason": completion.stop_reason,
+            completions = iter(results)
+            for row in batch:
+                record = {**row, **provenance, "completions": {}}
+                for style, instruction in STYLE_INSTRUCTIONS.items():
+                    completion = next(completions).outputs[0]
+                    candidate = completion.text.strip()
+                    record[style] = candidate if candidate and completion.finish_reason != "length" else None
+                    details = {
+                        "style_instruction": instruction,
+                        "raw_completion": completion.text,
+                        "finish_reason": completion.finish_reason,
                     }
+                    if not candidate:
+                        token_ids = list(completion.token_ids)
+                        details["completion_diagnostics"] = {
+                            "generated_token_count": len(token_ids),
+                            "first_token_ids": token_ids[:32],
+                            "first_tokens_decoded": tokenizer.decode(
+                                token_ids[:32], skip_special_tokens=False,
+                            ),
+                            "stop_reason": completion.stop_reason,
+                        }
+                    record["completions"][style] = details
                 output.write(json.dumps(record, ensure_ascii=False) + "\n")
         output.flush()
         os.link(output.name, destination)
@@ -157,7 +148,7 @@ def main():
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--model-path", default=os.environ.get("TRANSLATEGEMMA_MODEL_PATH"))
     parser.add_argument("--limit", type=positive_int)
-    parser.add_argument("--batch-size", type=positive_int, default=32)
+    parser.add_argument("--batch-size", type=positive_int, default=32, help="Source rows per batch (two requests per row)")
     parser.add_argument("--max-tokens", type=positive_int, default=512)
     parser.add_argument("--seed", type=int, default=0)
     args = parser.parse_args()
