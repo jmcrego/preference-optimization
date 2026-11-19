@@ -21,6 +21,11 @@ module load pytorch-gpu/py3/2.6.0
 source "$stage_dir/../scripts/setup_environment.sh"
 : "${TRANSLATEGEMMA_MODEL_PATH:?Set the shared local TranslateGemma model path}"
 
+# vLLM appends a UUID to this path. Keep its Unix sockets on the compute node.
+rpc_dir="$(mktemp -d /tmp/po-vllm.XXXXXXXX)"
+trap 'rm -rf -- "$rpc_dir"' EXIT
+export VLLM_RPC_BASE_PATH="$rpc_dir"
+
 # Isolate the inference process from user-site packages and inherited Python paths.
 srun --ntasks=1 python3 -I "$stage_dir/generate_candidates.py" \
     --dataset "$SCRATCH_DIR/datasets/prepared/enfr/train.jsonl" \
