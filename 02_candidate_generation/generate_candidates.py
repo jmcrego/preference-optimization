@@ -125,6 +125,16 @@ def generate(args):
                     "raw_completion": completion.text,
                     "finish_reason": completion.finish_reason,
                 }
+                if not completion.text.strip():
+                    token_ids = list(completion.token_ids)
+                    record["completion_diagnostics"] = {
+                        "generated_token_count": len(token_ids),
+                        "first_token_ids": token_ids[:32],
+                        "first_tokens_decoded": tokenizer.decode(
+                            token_ids[:32], skip_special_tokens=False,
+                        ),
+                        "stop_reason": completion.stop_reason,
+                    }
                 output.write(json.dumps(record, ensure_ascii=False) + "\n")
         output.flush()
         os.link(output.name, destination)

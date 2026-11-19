@@ -32,9 +32,9 @@ srun --ntasks=1 python3 -I "$stage_dir/generate_candidates.py" \
     --source-language en \
     --target-language fr \
     --prompt "$stage_dir/prompts/reference_assisted_literal_then_idiomatic.txt" \
-    --output-dir "$SCRATCH_DIR/datasets/generated/enfr/reference_assisted_literal_then_idiomatic" \
+    --output-dir "$SCRATCH_DIR/datasets/generated/enfr/diagnostics/reference_assisted_literal_then_idiomatic" \
     --model-path "$TRANSLATEGEMMA_MODEL_PATH" \
-    --limit 50 \
+    --limit 3 \
     --batch-size 32 \
     --max-tokens 512 \
     --seed 0
