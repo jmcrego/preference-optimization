@@ -36,8 +36,11 @@ if [[ "$experiment" == joint-styles ]]; then
 elif [[ "$experiment" == independent-styles ]]; then
     prompt="$stage_dir/prompts/reference_guided_independent_styles.txt"
     output_dir="$SCRATCH_DIR/datasets/generated/enfr/diagnostics/reference_guided_independent_styles"
+elif [[ "$experiment" == draft-rewrite ]]; then
+    prompt="$stage_dir/prompts/human_draft_style_rewrite.txt"
+    output_dir="$SCRATCH_DIR/datasets/generated/enfr/diagnostics/human_draft_style_rewrite"
 else
-    printf 'Unknown experiment: %s. Choose joint-styles or independent-styles.\n' "$experiment" >&2
+    printf 'Unknown experiment: %s. Choose joint-styles, independent-styles, or draft-rewrite.\n' "$experiment" >&2
     exit 2
 fi
 

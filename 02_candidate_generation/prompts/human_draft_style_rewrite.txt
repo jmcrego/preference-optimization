@@ -1,0 +1,12 @@
+Revise the human draft in {target_language} using the {source_language} source.
+{style_instruction}
+
+Check the draft against the source. Preserve meaning, facts, register, and
+terminology. Keep wording that already fits the requested style, and leave the
+draft unchanged if no edit is needed. Return only the revised translation.
+
+Source:
+{source}
+
+Human draft:
+{reference}

@@ -1,6 +1,8 @@
 # 02 Candidate generation
 
-The pilot sends two independent TranslateGemma requests per source. One asks for a literal translation and the other asks for an idiomatic translation. Each request shows the source and the human reference, which is provided only to help disambiguate the source. The model is asked to produce its own translation and return only that text. vLLM batches the requests together. The prompt uses an experimental Gemma user/model turn format. [Gemma prompt format](https://ai.google.dev/gemma/docs/core/prompt-structure)
+The independent-styles pilot sends two independent TranslateGemma requests per source. One asks for a literal translation and the other asks for an idiomatic translation. Each request shows the source and the human reference, which is provided only to help disambiguate the source. The model is asked to produce its own translation and return only that text. vLLM batches the requests together. The prompt uses an experimental Gemma user/model turn format. [Gemma prompt format](https://ai.google.dev/gemma/docs/core/prompt-structure)
+
+The draft-rewrite experiment sends two independent editing requests per source. Each receives the same human draft and the source. One asks for a source-close revision and the other asks for an idiomatic revision. The prompt allows the model to keep existing wording and return an unchanged draft when it already fits the requested style.
 
 ## Run on Jean Zay
 
@@ -12,7 +14,7 @@ The Python CLI accepts JSONL with `source` and either `reference` or `target`. E
 
 ## Output
 
-The prompt [reference_guided_independent_styles.txt](prompts/reference_guided_independent_styles.txt) produces `reference_guided_independent_styles.jsonl`. Each row contains the source, reference, language codes, `literal`, `idiomatic`, and generation metadata. The `completions` object records each style's instruction, raw text, and finish reason. An empty or truncated response sets only that style's candidate to null. Empty responses also record token diagnostics. Stage 03 can review identical translations and decide whether they are ties. Existing output files are protected against overwrite.
+Each prompt produces a JSONL file with the same filename stem. The active [human_draft_style_rewrite.txt](prompts/human_draft_style_rewrite.txt) prompt produces `human_draft_style_rewrite.jsonl`. Each row contains the source, reference, language codes, `literal`, `idiomatic`, and generation metadata. The `completions` object records each style's instruction, raw text, and finish reason. An empty or truncated response sets only that style's candidate to null. Empty responses also record token diagnostics. Stage 03 can review identical translations and decide whether they are ties. Existing output files are protected against overwrite.
 
 ## Recorded experiments
 
@@ -20,7 +22,8 @@ From this stage directory, run `bash run.sh` to submit the active `sbatch` line.
 
 | Experiment | Recorded run |
 | --- | --- |
-| `independent-styles` | Two independent requests per source, first three rows. This is the active call. |
+| `draft-rewrite` | Two independent edits of the human draft per source, first three rows. This is the active call. |
+| `independent-styles` | Two independent translations per source, first three rows. |
 | `joint-styles` | Original two-label prompt, first three rows. |
 
 The batch script selects the prompt and output directory for each experiment before running the shared command. The joint pilot uses `--joint-completion` and records one raw response and finish reason per source. Its prompt uses the four dataset placeholders and returns `LITERAL:` and `IDIOMATIC:` labels. To rerun an experiment whose JSONL already exists, change its output directory to preserve the earlier result.

@@ -27,4 +27,5 @@ if [[ ! -f "$TRANSLATEGEMMA_MODEL_PATH/config.json" ]]; then
 fi
 
 # sbatch generate_candidates.slurm "$stage_dir" joint-styles
-sbatch generate_candidates.slurm "$stage_dir" independent-styles
+# sbatch generate_candidates.slurm "$stage_dir" independent-styles
+sbatch generate_candidates.slurm "$stage_dir" draft-rewrite
