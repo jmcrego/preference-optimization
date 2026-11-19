@@ -14,7 +14,7 @@ The Python CLI accepts JSONL with `source` and either `reference` or `target`. E
 
 ## Output
 
-Each prompt produces a JSONL file with the same filename stem. The active [human_draft_style_rewrite.txt](prompts/human_draft_style_rewrite.txt) prompt produces `human_draft_style_rewrite.jsonl`. Each row contains the source, reference, language codes, `literal`, `idiomatic`, and generation metadata. The `completions` object records each style's instruction, raw text, and finish reason. An empty or truncated response sets only that style's candidate to null. Empty responses also record token diagnostics. Stage 03 can review identical translations and decide whether they are ties. Existing output files are protected against overwrite.
+Each prompt produces a JSONL file with the same filename stem. The active [human_draft_style_rewrite.txt](prompts/human_draft_style_rewrite.txt) prompt produces `human_draft_style_rewrite.jsonl`. Each row contains the source, reference, language codes, `literal`, `idiomatic`, and generation metadata. The `completions` object records each style's instruction, raw text, and finish reason. An empty or truncated response sets only that style's candidate to null. Every completion records its token count, first 32 token IDs and their decoded text with special tokens visible, and stop reason. In the joint experiment these diagnostics are at the row level. In the two-request experiments they are under each style in `completions`. Stage 03 can review identical translations and decide whether they are ties. Existing output files are protected against overwrite.
 
 ## Recorded experiments
 

@@ -32,19 +32,17 @@ def parse_pair(text):
 
 
 def completion_details(completion, tokenizer):
-    details = {
+    first_token_ids = list(completion.token_ids[:32])
+    return {
         "raw_completion": completion.text,
         "finish_reason": completion.finish_reason,
-    }
-    if not completion.text.strip():
-        token_ids = list(completion.token_ids)
-        details["completion_diagnostics"] = {
-            "generated_token_count": len(token_ids),
-            "first_token_ids": token_ids[:32],
-            "first_tokens_decoded": tokenizer.decode(token_ids[:32], skip_special_tokens=False),
+        "completion_diagnostics": {
+            "generated_token_count": len(completion.token_ids),
+            "first_token_ids": first_token_ids,
+            "first_tokens_decoded": tokenizer.decode(first_token_ids, skip_special_tokens=False),
             "stop_reason": completion.stop_reason,
-        }
-    return details
+        },
+    }
 
 
 def read_dataset(path, source_language, target_language):
