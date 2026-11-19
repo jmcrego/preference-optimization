@@ -20,4 +20,10 @@ stage_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 : "${SCRATCH_DIR:?Source scripts/setup_environment.sh first}"
 : "${TRANSLATEGEMMA_MODEL_PATH:?Set the shared local TranslateGemma model path}"
 
+if [[ ! -f "$TRANSLATEGEMMA_MODEL_PATH/config.json" ]]; then
+    printf 'Expected a local TranslateGemma directory with config.json: %s\n' \
+        "$TRANSLATEGEMMA_MODEL_PATH" >&2
+    exit 1
+fi
+
 sbatch generate_candidates.slurm "$stage_dir"
