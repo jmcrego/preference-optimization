@@ -26,15 +26,30 @@ rpc_dir="$(mktemp -d /tmp/po-vllm.XXXXXXXX)"
 trap 'rm -rf -- "$rpc_dir"' EXIT
 export VLLM_RPC_BASE_PATH="$rpc_dir"
 
+experiment="${2:-independent-styles}"
+experiment_args=(--limit 3)
+
+if [[ "$experiment" == joint-styles ]]; then
+    prompt="$stage_dir/prompts/reference_assisted_literal_then_idiomatic.txt"
+    output_dir="$SCRATCH_DIR/datasets/generated/enfr/reference_assisted_literal_then_idiomatic"
+    experiment_args+=(--joint-completion)
+elif [[ "$experiment" == independent-styles ]]; then
+    prompt="$stage_dir/prompts/reference_guided_independent_styles.txt"
+    output_dir="$SCRATCH_DIR/datasets/generated/enfr/diagnostics/reference_guided_independent_styles"
+else
+    printf 'Unknown experiment: %s. Choose joint-styles or independent-styles.\n' "$experiment" >&2
+    exit 2
+fi
+
 # Isolate the inference process from user-site packages and inherited Python paths.
 srun --ntasks=1 python3 -I "$stage_dir/generate_candidates.py" \
     --dataset "$SCRATCH_DIR/datasets/prepared/enfr/train.jsonl" \
     --source-language en \
     --target-language fr \
-    --prompt "$stage_dir/prompts/reference_guided_independent_styles.txt" \
-    --output-dir "$SCRATCH_DIR/datasets/generated/enfr/diagnostics/reference_guided_independent_styles" \
+    --prompt "$prompt" \
+    --output-dir "$output_dir" \
     --model-path "$TRANSLATEGEMMA_MODEL_PATH" \
-    --limit 3 \
+    "${experiment_args[@]}" \
     --batch-size 32 \
     --max-tokens 512 \
     --seed 0

@@ -16,7 +16,7 @@ stage_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 #     --target-language fr \
 #     --output-dir "$SCRATCH_DIR/datasets/prepared/enfr"
 
-# 3. Submit the independent-style pilot to Jean Zay.
+# 3. Submit one recorded experiment to Jean Zay.
 : "${SCRATCH_DIR:?Source scripts/setup_environment.sh first}"
 : "${TRANSLATEGEMMA_MODEL_PATH:?Set the shared local TranslateGemma model path}"
 
@@ -26,4 +26,5 @@ if [[ ! -f "$TRANSLATEGEMMA_MODEL_PATH/config.json" ]]; then
     exit 1
 fi
 
-sbatch generate_candidates.slurm "$stage_dir"
+# sbatch generate_candidates.slurm "$stage_dir" joint-styles
+sbatch generate_candidates.slurm "$stage_dir" independent-styles
