@@ -69,6 +69,10 @@ def generate(args):
 
     os.environ["HF_HUB_OFFLINE"] = "1"
     os.environ["TRANSFORMERS_OFFLINE"] = "1"
+    # vLLM's inspection subprocess starts Python without the parent's -I flag.
+    os.environ.pop("PYTHONPATH", None)
+    os.environ["PYTHONNOUSERSITE"] = "1"
+    os.environ["PYTHONSAFEPATH"] = "1"
     from vllm import LLM, SamplingParams
 
     decoding = {"temperature": 0.0, "max_tokens": args.max_tokens, "seed": args.seed}
