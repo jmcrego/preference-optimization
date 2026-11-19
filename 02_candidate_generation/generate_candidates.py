@@ -76,7 +76,13 @@ def generate(args):
     from vllm import LLM, SamplingParams
 
     decoding = {"temperature": 0.0, "max_tokens": args.max_tokens, "seed": args.seed}
-    llm = LLM(model=str(model_path), tensor_parallel_size=1, seed=args.seed)
+    # This text-only experiment does not need vLLM to profile dummy images.
+    llm = LLM(
+        model=str(model_path),
+        tensor_parallel_size=1,
+        seed=args.seed,
+        limit_mm_per_prompt={"image": 0},
+    )
     tokenizer = llm.get_tokenizer()
     start_token = "<start_of_turn>"
     end_token = "<end_of_turn>"
