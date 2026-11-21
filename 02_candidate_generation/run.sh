@@ -18,15 +18,15 @@ stage_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
 # 3. Submit one recorded experiment to Jean Zay.
 if [[ $# -ne 1 ]]; then
-    printf 'Usage: bash run.sh <joint-styles|independent-styles|draft-rewrite|draft-rewrite-full>\n' >&2
+    printf 'Usage: bash run.sh <joint-styles|independent-styles|draft-rewrite>\n' >&2
     exit 2
 fi
 
 experiment="$1"
 case "$experiment" in
-    joint-styles|independent-styles|draft-rewrite|draft-rewrite-full) ;;
+    joint-styles|independent-styles|draft-rewrite) ;;
     *)
-        printf 'Unknown experiment: %s. Choose joint-styles, independent-styles, draft-rewrite, or draft-rewrite-full.\n' "$experiment" >&2
+        printf 'Unknown experiment: %s. Choose joint-styles, independent-styles, or draft-rewrite.\n' "$experiment" >&2
         exit 2
         ;;
 esac

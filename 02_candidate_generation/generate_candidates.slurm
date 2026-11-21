@@ -27,25 +27,20 @@ trap 'rm -rf -- "$rpc_dir"' EXIT
 export VLLM_RPC_BASE_PATH="$rpc_dir"
 
 experiment="${2:-independent-styles}"
-experiment_args=(--limit 3)
+experiment_args=(--dtype bfloat16 --no-diagnostics)
 
 if [[ "$experiment" == joint-styles ]]; then
     prompt="$stage_dir/prompts/reference_assisted_literal_then_idiomatic.txt"
-    output_dir="$SCRATCH_DIR/datasets/generated/enfr/reference_assisted_literal_then_idiomatic"
+    output_dir="$SCRATCH_DIR/datasets/generated/enfr/full/reference_assisted_literal_then_idiomatic"
     experiment_args+=(--joint-completion)
 elif [[ "$experiment" == independent-styles ]]; then
     prompt="$stage_dir/prompts/reference_guided_independent_styles.txt"
-    output_dir="$SCRATCH_DIR/datasets/generated/enfr/diagnostics/reference_guided_independent_styles"
+    output_dir="$SCRATCH_DIR/datasets/generated/enfr/reference_guided_independent_styles"
 elif [[ "$experiment" == draft-rewrite ]]; then
     prompt="$stage_dir/prompts/human_draft_style_rewrite.txt"
-    output_dir="$SCRATCH_DIR/datasets/generated/enfr/diagnostics/bfloat16/human_draft_style_rewrite"
-    experiment_args+=(--dtype bfloat16)
-elif [[ "$experiment" == draft-rewrite-full ]]; then
-    prompt="$stage_dir/prompts/human_draft_style_rewrite.txt"
     output_dir="$SCRATCH_DIR/datasets/generated/enfr/human_draft_style_rewrite"
-    experiment_args=(--dtype bfloat16 --no-diagnostics)
 else
-    printf 'Unknown experiment: %s. Choose joint-styles, independent-styles, draft-rewrite, or draft-rewrite-full.\n' "$experiment" >&2
+    printf 'Unknown experiment: %s. Choose joint-styles, independent-styles, or draft-rewrite.\n' "$experiment" >&2
     exit 2
 fi
 
