@@ -22,8 +22,10 @@ From this stage directory, run `bash run.sh` to submit the active `sbatch` line.
 
 | Experiment | Recorded run |
 | --- | --- |
-| `draft-rewrite` | Two independent edits of the human draft per source, first three rows. This is the active call. |
+| `draft-rewrite` | Two independent edits of the human draft per source, first three rows. This is the active call and uses BF16. |
 | `independent-styles` | Two independent translations per source, first three rows. |
 | `joint-styles` | Original two-label prompt, first three rows. |
 
 The batch script selects the prompt and output directory for each experiment before running the shared command. The joint pilot uses `--joint-completion` and records one raw response and finish reason per source. Its prompt uses the four dataset placeholders and returns `LITERAL:` and `IDIOMATIC:` labels. To rerun an experiment whose JSONL already exists, change its output directory to preserve the earlier result.
+
+The BF16 draft-rewrite retry writes under `datasets/generated/enfr/diagnostics/bfloat16/human_draft_style_rewrite/`. The requested precision is recorded as `requested_dtype` in each row.

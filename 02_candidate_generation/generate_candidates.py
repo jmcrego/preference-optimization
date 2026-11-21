@@ -103,6 +103,7 @@ def generate(args):
     llm = LLM(
         model=str(model_path),
         tensor_parallel_size=1,
+        dtype=args.dtype,
         seed=args.seed,
         limit_mm_per_prompt={"image": 0},
     )
@@ -117,6 +118,7 @@ def generate(args):
         "prompt_name": args.prompt.stem,
         "prompt_sha256": hashlib.sha256(template.encode("utf-8")).hexdigest(),
         "model_path": str(model_path),
+        "requested_dtype": args.dtype,
         "decoding": decoding,
     }
 
@@ -181,6 +183,7 @@ def main():
     )
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--model-path", default=os.environ.get("TRANSLATEGEMMA_MODEL_PATH"))
+    parser.add_argument("--dtype", choices=("auto", "float16", "bfloat16", "float32"), default="auto")
     parser.add_argument("--limit", type=positive_int)
     parser.add_argument("--batch-size", type=positive_int, default=32, help="Source rows per batch")
     parser.add_argument("--max-tokens", type=positive_int, default=512)
