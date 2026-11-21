@@ -17,6 +17,20 @@ stage_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 #     --output-dir "$SCRATCH_DIR/datasets/prepared/enfr"
 
 # 3. Submit one recorded experiment to Jean Zay.
+if [[ $# -ne 1 ]]; then
+    printf 'Usage: bash run.sh <joint-styles|independent-styles|draft-rewrite|draft-rewrite-full>\n' >&2
+    exit 2
+fi
+
+experiment="$1"
+case "$experiment" in
+    joint-styles|independent-styles|draft-rewrite|draft-rewrite-full) ;;
+    *)
+        printf 'Unknown experiment: %s. Choose joint-styles, independent-styles, draft-rewrite, or draft-rewrite-full.\n' "$experiment" >&2
+        exit 2
+        ;;
+esac
+
 : "${SCRATCH_DIR:?Source scripts/setup_environment.sh first}"
 : "${TRANSLATEGEMMA_MODEL_PATH:?Set the shared local TranslateGemma model path}"
 
@@ -26,7 +40,4 @@ if [[ ! -f "$TRANSLATEGEMMA_MODEL_PATH/config.json" ]]; then
     exit 1
 fi
 
-# sbatch generate_candidates.slurm "$stage_dir" joint-styles
-# sbatch generate_candidates.slurm "$stage_dir" independent-styles
-# sbatch generate_candidates.slurm "$stage_dir" draft-rewrite
-sbatch generate_candidates.slurm "$stage_dir" draft-rewrite-full
+sbatch generate_candidates.slurm "$stage_dir" "$experiment"

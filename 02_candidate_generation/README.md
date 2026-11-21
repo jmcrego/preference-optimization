@@ -6,23 +6,23 @@ The draft-rewrite experiment sends two independent editing requests per source. 
 
 ## Run on Jean Zay
 
-From the Jean Zay login shell, source `scripts/setup_environment.sh` to use the default shared TranslateGemma path. Export `TRANSLATEGEMMA_MODEL_PATH` before sourcing if you need a different local copy. From inside `02_candidate_generation/`, create `logs/` once with `mkdir -p logs`, then run `bash run.sh` to submit the pilot. SLURM writes logs under `./logs/`.
+From the Jean Zay login shell, source `scripts/setup_environment.sh` to use the default shared TranslateGemma path. Export `TRANSLATEGEMMA_MODEL_PATH` before sourcing if you need a different local copy. From inside `02_candidate_generation/`, create `logs/` once with `mkdir -p logs`, then run `bash run.sh <experiment>` to submit a recorded experiment. SLURM writes logs under `./logs/`.
 
-The batch script loads the H100 modules, uses the project venv if present, and invokes `generate_candidates.py` with `srun`. It uses `python3 -I` so user-site packages do not shadow dependencies. vLLM must be available in the selected Python environment. The batch command in [generate_candidates.slurm](generate_candidates.slurm) runs the full prepared English-to-French training split in BF16. The pilot branches still take the first three rows.
+The batch script loads the H100 modules, uses the project venv if present, and invokes `generate_candidates.py` with `srun`. It uses `python3 -I` so user-site packages do not shadow dependencies. vLLM must be available in the selected Python environment. The `draft-rewrite-full` experiment in [generate_candidates.slurm](generate_candidates.slurm) runs the full prepared English-to-French training split in BF16. The pilot branches still take the first three rows.
 
 The Python CLI accepts JSONL with `source` and either `reference` or `target`. Existing IDs are carried through. Prompt files must include `{source}`, `{reference}`, `{source_language}`, `{target_language}`, and `{style_instruction}`.
 
 ## Output
 
-Each prompt produces a JSONL file with the same filename stem. The active [human_draft_style_rewrite.txt](prompts/human_draft_style_rewrite.txt) prompt produces `human_draft_style_rewrite.jsonl`. Each row contains the source, reference, language codes, `literal`, `idiomatic`, and generation metadata. The `completions` object records each style's instruction, raw text, and finish reason. An empty or truncated response sets only that style's candidate to null. With token diagnostics enabled, every completion records its token count, first 32 token IDs and their decoded text with special tokens visible, and stop reason. In the joint experiment these diagnostics are at the row level. In the two-request experiments they are under each style in `completions`. Stage 03 can review identical translations and decide whether they are ties. Existing output files are protected against overwrite.
+Each prompt produces a JSONL file with the same filename stem. The [human_draft_style_rewrite.txt](prompts/human_draft_style_rewrite.txt) prompt produces `human_draft_style_rewrite.jsonl`. Each row contains the source, reference, language codes, `literal`, `idiomatic`, and generation metadata. The `completions` object records each style's instruction, raw text, and finish reason. An empty or truncated response sets only that style's candidate to null. With token diagnostics enabled, every completion records its token count, first 32 token IDs and their decoded text with special tokens visible, and stop reason. In the joint experiment these diagnostics are at the row level. In the two-request experiments they are under each style in `completions`. Stage 03 can review identical translations and decide whether they are ties. Existing output files are protected against overwrite.
 
 ## Recorded experiments
 
-From this stage directory, run `bash run.sh` to submit the active `sbatch` line. Edit `run.sh` to switch experiments, leaving only one submission line active.
+Pass exactly one experiment name to the launcher. For example, use `bash run.sh draft-rewrite-full` for the full run.
 
 | Experiment | Recorded run |
 | --- | --- |
-| `draft-rewrite-full` | Two independent edits per source over the full training split, using BF16 and omitting token diagnostics. This is the active call. |
+| `draft-rewrite-full` | Two independent edits per source over the full training split, using BF16 and omitting token diagnostics. |
 | `draft-rewrite` | The three-row BF16 pilot with token diagnostics. |
 | `independent-styles` | Two independent translations per source, first three rows. |
 | `joint-styles` | Original two-label prompt, first three rows. |
