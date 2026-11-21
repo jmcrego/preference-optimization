@@ -51,7 +51,7 @@ preference-optimization/
 │   └── datasets/style_dataset.yaml
 ├── 01_data_preparation/{README.md,run.sh,prepare_data.slurm,inspect_dataset.py,parallel_tsv.py}
 ├── 02_candidate_generation/{README.md,generate_candidates.py,run.sh,generate_candidates.slurm,teacher.example.yaml,prompts/}
-├── 03_candidate_validation/{README.md,validate_candidates.py,run.sh,validate_candidates.slurm}
+├── 03_candidate_validation/{README.md,validate_candidates.py,run.sh,validate_candidates.slurm,score_quality.py,validation_io.py,mqm_judge.txt}
 ├── 04_preference_dataset/{README.md,run.py,run.sh,build_preferences.slurm}
 ├── 05_fine_tuning/{README.md,train_dpo.py,run.sh,train_dpo.slurm,style_dpo.yaml}
 ├── 06_evaluation/{README.md,evaluate.py,run.sh,evaluate.slurm,style_evaluation.yaml}

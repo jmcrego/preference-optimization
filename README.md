@@ -14,7 +14,7 @@ Parameter-efficient fine-tuning of machine translation models using preference o
 | 06 | [Evaluation](06_evaluation/README.md) |
 | 07 | [Analysis](07_analysis/README.md) |
 
-Stage 01 converts existing train and test TSVs into JSONL. Stage 02 runs a reference-guided candidate-generation pilot with offline vLLM. Stages 03–07 are Phase 1 stubs. Each stage keeps its Python entry point, SLURM template, and Jean Zay `run.sh` command log together. Stages that need dependencies reuse the same project virtual environment. Each stage keeps its own configuration templates. The `configs/` directory holds settings shared across stages, including storage, the base model, style, and the dataset contract. The `scripts/` directory contains the Jean Zay environment and scratch-storage utilities.
+Stage 01 converts existing train and test TSVs into JSONL. Stage 02 runs a reference-guided candidate-generation pilot with offline vLLM. Stage 03 adds quality scores and blinded MQM-style judgments. Stages 04–07 are Phase 1 stubs. Each stage keeps its Python entry point, SLURM template, and Jean Zay `run.sh` command log together. Stages that need dependencies reuse the same project virtual environment. Each stage keeps its own configuration templates. The `configs/` directory holds settings shared across stages, including storage, the base model, style, and the dataset contract. The `scripts/` directory contains the Jean Zay environment and scratch-storage utilities.
 
 From the repository root, run the CPU checks or display the resolved scratch root with the Python standard library.
 

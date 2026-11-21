@@ -16,12 +16,12 @@ Confirm the persistent checkout location, any required partition or memory setti
 
 ## Stage command logs and the shared environment
 
-Each numbered stage keeps its Python entry point, SLURM template, and ordered `run.sh` together. Use `run.sh` to record the exact commands, arguments, and environment settings used on Jean Zay. Stage 01 runs the converter directly with system Python. Stage 02 submits the candidate-generation batch job. Stages 03–07 have command-log templates.
+Each numbered stage keeps its Python entry point, SLURM template, and ordered `run.sh` together. Use `run.sh` to record the exact commands, arguments, and environment settings used on Jean Zay. Stage 01 runs the converter directly with system Python. Stage 02 submits candidate generation. Stage 03 submits quality scoring and Qwen judging as separate jobs. Stages 04–07 have command-log templates.
 
 Future batch jobs that need the project environment should source the same script inside the job before starting Python.
 
 ## H100 batch templates
 
-The Stage 02, 05, and 06 templates record the supplied reservation settings for account `eut@h100`. They specify one H100 on one node, ten CPUs per task, and a twenty-hour time limit. The module sequence loads `arch/h100` and `pytorch-gpu/py3/2.6.0` after purging the current modules. The reservation and module lines are enabled for Stage 02. Stages 05 and 06 keep them commented while their workloads are stubs. Stage 03's resource request depends on the judge backend.
+The Stage 02, 03, 05, and 06 templates record the supplied reservation settings for account `eut@h100`. They specify one H100 on one node, ten CPUs per task, and a twenty-hour time limit. The module sequence loads `arch/h100` and `pytorch-gpu/py3/2.6.0` after purging the current modules. The reservation and module lines are enabled for Stages 02 and 03. Stages 05 and 06 keep them commented while their workloads are stubs.
 
 Each `.slurm` script sets stdout and stderr paths under `./logs/`. Before submitting, create the Git-ignored `logs/` directory in the stage directory. Run the Stage 02 launcher from inside its stage directory so those relative paths resolve beside the scripts. Use the same submission pattern when enabling the other stages. The batch script loads the H100 modules and sources the project setup before running Python.

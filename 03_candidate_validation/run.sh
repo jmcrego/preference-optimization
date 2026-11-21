@@ -12,8 +12,12 @@ repo_dir="$(dirname -- "$stage_dir")"
 # (cd -- "$repo_dir/02_candidate_generation" && bash run.sh independent-styles)
 # Candidates: $SCRATCH_DIR/datasets/generated/enfr/reference_guided_independent_styles/reference_guided_independent_styles.jsonl
 
-# 3. Candidate validation. Record the exact Stage 02 output path and judge
-# settings here once validation is implemented.
-# For a batch run, record the verified SLURM command for validate_candidates.slurm.
-
-python3 "$stage_dir/validate_candidates.py"
+# 3. Submit quality scoring first. Submit MQM judging with the scored JSONL.
+case "${1:-}" in
+    quality|mqm) ;;
+    *)
+        printf 'Usage: bash run.sh <quality|mqm> [script arguments]\n' >&2
+        exit 2
+        ;;
+esac
+sbatch validate_candidates.slurm "$stage_dir" "$@"

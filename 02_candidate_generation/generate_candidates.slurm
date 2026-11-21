@@ -31,7 +31,7 @@ experiment_args=(--dtype bfloat16 --no-diagnostics)
 
 if [[ "$experiment" == joint-styles ]]; then
     prompt="$stage_dir/prompts/reference_assisted_literal_then_idiomatic.txt"
-    output_dir="$SCRATCH_DIR/datasets/generated/enfr/full/reference_assisted_literal_then_idiomatic"
+    output_dir="$SCRATCH_DIR/datasets/generated/enfr/reference_assisted_literal_then_idiomatic"
     experiment_args+=(--joint-completion)
 elif [[ "$experiment" == independent-styles ]]; then
     prompt="$stage_dir/prompts/reference_guided_independent_styles.txt"
