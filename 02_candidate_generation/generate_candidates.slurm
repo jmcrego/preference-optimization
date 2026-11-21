@@ -40,8 +40,12 @@ elif [[ "$experiment" == draft-rewrite ]]; then
     prompt="$stage_dir/prompts/human_draft_style_rewrite.txt"
     output_dir="$SCRATCH_DIR/datasets/generated/enfr/diagnostics/bfloat16/human_draft_style_rewrite"
     experiment_args+=(--dtype bfloat16)
+elif [[ "$experiment" == draft-rewrite-full ]]; then
+    prompt="$stage_dir/prompts/human_draft_style_rewrite.txt"
+    output_dir="$SCRATCH_DIR/datasets/generated/enfr/human_draft_style_rewrite"
+    experiment_args=(--dtype bfloat16 --no-diagnostics)
 else
-    printf 'Unknown experiment: %s. Choose joint-styles, independent-styles, or draft-rewrite.\n' "$experiment" >&2
+    printf 'Unknown experiment: %s. Choose joint-styles, independent-styles, draft-rewrite, or draft-rewrite-full.\n' "$experiment" >&2
     exit 2
 fi
 

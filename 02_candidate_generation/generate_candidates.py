@@ -31,18 +31,20 @@ def parse_pair(text):
     return literal, idiomatic
 
 
-def completion_details(completion, tokenizer):
-    first_token_ids = list(completion.token_ids[:32])
-    return {
+def completion_details(completion, tokenizer, include_diagnostics):
+    details = {
         "raw_completion": completion.text,
         "finish_reason": completion.finish_reason,
-        "completion_diagnostics": {
+    }
+    if include_diagnostics:
+        first_token_ids = list(completion.token_ids[:32])
+        details["completion_diagnostics"] = {
             "generated_token_count": len(completion.token_ids),
             "first_token_ids": first_token_ids,
             "first_tokens_decoded": tokenizer.decode(first_token_ids, skip_special_tokens=False),
             "stop_reason": completion.stop_reason,
-        },
-    }
+        }
+    return details
 
 
 def read_dataset(path, source_language, target_language):
@@ -147,7 +149,7 @@ def generate(args):
                     if completion.finish_reason == "length":
                         literal, idiomatic = None, None
                     record.update(literal=literal, idiomatic=idiomatic)
-                    record.update(completion_details(completion, tokenizer))
+                    record.update(completion_details(completion, tokenizer, not args.no_diagnostics))
                 else:
                     record["completions"] = {}
                     for style, instruction in STYLE_INSTRUCTIONS.items():
@@ -156,7 +158,7 @@ def generate(args):
                         record[style] = candidate if candidate and completion.finish_reason != "length" else None
                         record["completions"][style] = {
                             "style_instruction": instruction,
-                            **completion_details(completion, tokenizer),
+                            **completion_details(completion, tokenizer, not args.no_diagnostics),
                         }
                 output.write(json.dumps(record, ensure_ascii=False) + "\n")
         output.flush()
@@ -184,6 +186,7 @@ def main():
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--model-path", default=os.environ.get("TRANSLATEGEMMA_MODEL_PATH"))
     parser.add_argument("--dtype", choices=("auto", "float16", "bfloat16", "float32"), default="auto")
+    parser.add_argument("--no-diagnostics", action="store_true", help="Omit token diagnostics from JSONL")
     parser.add_argument("--limit", type=positive_int)
     parser.add_argument("--batch-size", type=positive_int, default=32, help="Source rows per batch")
     parser.add_argument("--max-tokens", type=positive_int, default=512)
